@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
@@ -37,6 +36,21 @@ def promotion_image():
 @app.route('/choice/<variant>')
 def choice(variant):
     return render_template('choice.html', variant=variant)
+
+
+img = None
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def load_photo():
+    global img
+    if request.method == 'GET':
+        return render_template('load_photo.html', img=img)
+    elif request.method == 'POST':
+        f = request.files['file']
+        img = 'static/img/' + f.filename
+        f.save(img)
+        return render_template('load_photo.html', img=img)
 
 
 if __name__ == '__main__':
